@@ -15,15 +15,15 @@ services:
     environment:
       - FLASK_ENV=development
 
-  bakery_service:
-    build: ./bakery_service
+  bike_service:
+    build: ./bike_service
     ports:
       - "5002:5000"
     environment:
       - FLASK_ENV=development
 
-  backup_bakery_service:
-    build: ./bakery_service
+  backup_bike_service:
+    build: ./bike_service
     ports:
       - "5003:5000"
     environment:
