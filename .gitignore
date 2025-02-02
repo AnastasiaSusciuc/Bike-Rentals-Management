@@ -1,0 +1,17 @@
+# Byte-compiled / cached files
+__pycache__/
+*.py[cod]
+*.swp
+
+# Virtual environment
+venv/
+.env/
+SOA_venv/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Logs and databases
+*.log
+db.sqlite3
