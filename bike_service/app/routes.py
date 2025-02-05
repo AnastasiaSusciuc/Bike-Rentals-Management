@@ -55,7 +55,7 @@ def get_all_bikes():
     except Exception as e:
         return jsonify({"msg": f"Error retrieving bikes: {str(e)}", "hostname": HOST_NAME}), 500
 
-#
+
 # @bike_bp.route('/rented_bikes', methods=['GET'])
 # @role_required('admin', 'user')
 # def get_rented_bikes():
@@ -83,59 +83,59 @@ def get_all_bikes():
 #         "rented_bikes": rented_bikes,
 #         "hostname": os.getenv('HOST_NAME')
 #     }), 200
-#
-#
-# @bike_bp.route('/search', methods=['GET'])
-# @role_required('admin', 'user')
-# def search_bike_by_model():
-#     model_query = request.args.get('model')
-#
-#     if not model_query:
-#         return jsonify({"msg": "Model query parameter is required", "hostname": HOST_NAME}), 400
-#
-#     # Perform a case-insensitive search for bikes with models that contain the query
-#     bikes = Bike.query.filter(Bike.model.ilike(f"%{model_query}%")).all()
-#
-#     if not bikes:
-#         return jsonify({"msg": "No bikes found matching the model", "hostname": HOST_NAME}), 404
-#
-#     # Format the result
-#     bike_list = [
-#         {
-#             "id": bike.id,
-#             "model": bike.model,
-#             "brand": bike.brand,
-#             "serial_number": bike.serial_number,
-#             "available_units": bike.available_units
-#         } for bike in bikes
-#     ]
-#
-#     return jsonify({"bikes": bike_list, "hostname": HOST_NAME}), 200
-#
-#
-# @bike_bp.route('/search_by_brand', methods=['GET'])
-# @role_required('admin', 'user')
-# def search_bike_by_brand():
-#     brand_query = request.args.get('brand')
-#
-#     if not brand_query:
-#         return jsonify({"msg": "Brand query parameter is required", "hostname": HOST_NAME}), 400
-#
-#     # Perform a case-insensitive search for bikes with brands that contain the query
-#     bikes = Bike.query.filter(Bike.brand.ilike(f"%{brand_query}%")).all()
-#
-#     if not bikes:
-#         return jsonify({"msg": "No bikes found matching the brand", "hostname": HOST_NAME}), 404
-#
-#     # Format the result
-#     bike_list = [
-#         {
-#             "id": bike.id,
-#             "model": bike.model,
-#             "brand": bike.brand,
-#             "serial_number": bike.serial_number,
-#             "available_units": bike.available_units
-#         } for bike in bikes
-#     ]
-#
-#     return jsonify({"bikes": bike_list, "hostname": HOST_NAME}), 200
+
+
+@bike_bp.route('/search', methods=['GET'])
+@role_required('admin', 'user')
+def search_bike_by_model():
+    model_query = request.args.get('model')
+
+    if not model_query:
+        return jsonify({"msg": "Model query parameter is required", "hostname": HOST_NAME}), 400
+
+    # Perform a case-insensitive search for bikes with models that contain the query
+    bikes = Bike.query.filter(Bike.model.ilike(f"%{model_query}%")).all()
+
+    if not bikes:
+        return jsonify({"msg": "No bikes found matching the model", "hostname": HOST_NAME}), 404
+
+    # Format the result
+    bike_list = [
+        {
+            "id": bike.id,
+            "model": bike.model,
+            "brand": bike.brand,
+            "serial_number": bike.serial_number,
+            "available_units": bike.available_units
+        } for bike in bikes
+    ]
+
+    return jsonify({"bikes": bike_list, "hostname": HOST_NAME}), 200
+
+
+@bike_bp.route('/search_by_brand', methods=['GET'])
+@role_required('admin', 'user')
+def search_bike_by_brand():
+    brand_query = request.args.get('brand')
+
+    if not brand_query:
+        return jsonify({"msg": "Brand query parameter is required", "hostname": HOST_NAME}), 400
+
+    # Perform a case-insensitive search for bikes with brands that contain the query
+    bikes = Bike.query.filter(Bike.brand.ilike(f"%{brand_query}%")).all()
+
+    if not bikes:
+        return jsonify({"msg": "No bikes found matching the brand", "hostname": HOST_NAME}), 404
+
+    # Format the result
+    bike_list = [
+        {
+            "id": bike.id,
+            "model": bike.model,
+            "brand": bike.brand,
+            "serial_number": bike.serial_number,
+            "available_units": bike.available_units
+        } for bike in bikes
+    ]
+
+    return jsonify({"bikes": bike_list, "hostname": HOST_NAME}), 200
