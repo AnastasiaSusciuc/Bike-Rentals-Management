@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+
+import requests
 from flask import Blueprint, request, jsonify
 from .models import Bike, db, Rental
 from .utils import role_required
@@ -33,7 +35,7 @@ def add_bike():
 
 
 @bike_bp.route('/all_bikes', methods=['GET'])
-@role_required('admin', 'user')
+@role_required('admin', 'renter')
 def get_all_bikes():
     try:
         bikes = Bike.query.all()
@@ -56,37 +58,37 @@ def get_all_bikes():
         return jsonify({"msg": f"Error retrieving bikes: {str(e)}", "hostname": HOST_NAME}), 500
 
 
-# @bike_bp.route('/rented_bikes', methods=['GET'])
-# @role_required('admin', 'user')
-# def get_rented_bikes():
-#     user_id = request.args.get('user_id')
-#
-#     # Query the Rental table for bikes rented by this user
-#     rentals = Rental.query.filter_by(user_id=user_id, returned_on=None).all()
-#
-#     if not rentals:
-#         return jsonify({"msg": "No bikes rented"}), 404
-#
-#     rented_bikes = []
-#     for rental in rentals:
-#         bike = Bike.query.get(rental.bike_id)
-#         if bike:
-#             rented_bikes.append({
-#                 "bike_id": bike.id,
-#                 "model": bike.model,
-#                 "brand": bike.brand,
-#                 "serial_number": bike.serial_number,
-#                 "return_by": rental.return_by
-#             })
-#
-#     return jsonify({
-#         "rented_bikes": rented_bikes,
-#         "hostname": os.getenv('HOST_NAME')
-#     }), 200
+@bike_bp.route('/rented_bikes', methods=['GET'])
+@role_required('admin', 'renter')
+def get_rented_bikes():
+    user_id = request.args.get('user_id')
+
+    # Query the Rental table for bikes rented by this user
+    rentals = Rental.query.filter_by(user_id=user_id, returned_on=None).all()
+
+    if not rentals:
+        return jsonify({"msg": "No bikes rented"}), 404
+
+    rented_bikes = []
+    for rental in rentals:
+        bike = Bike.query.get(rental.bike_id)
+        if bike:
+            rented_bikes.append({
+                "bike_id": bike.id,
+                "model": bike.model,
+                "brand": bike.brand,
+                "serial_number": bike.serial_number,
+                "return_by": rental.return_by
+            })
+
+    return jsonify({
+        "rented_bikes": rented_bikes,
+        "hostname": os.getenv('HOST_NAME')
+    }), 200
 
 
 @bike_bp.route('/search', methods=['GET'])
-@role_required('admin', 'user')
+@role_required('admin', 'renter')
 def search_bike_by_model():
     model_query = request.args.get('model')
 
@@ -114,7 +116,7 @@ def search_bike_by_model():
 
 
 @bike_bp.route('/search_by_brand', methods=['GET'])
-@role_required('admin', 'user')
+@role_required('admin', 'renter')
 def search_bike_by_brand():
     brand_query = request.args.get('brand')
 
@@ -139,3 +141,16 @@ def search_bike_by_brand():
     ]
 
     return jsonify({"bikes": bike_list, "hostname": HOST_NAME}), 200
+
+
+@bike_bp.route('/get-garages', methods=['GET'])
+# @role_required('admin', 'renter')  # todo
+def get_garages():
+    bikes_count = Bike.query.count()
+    response = requests.post(os.getenv('LAMBDA_URL'), json={"bikes": bikes_count})
+
+    if response.status_code == 200:
+        response_data = response.json()
+        return jsonify(response_data)
+    else:
+        return jsonify({"error": "Error calling Lambda function"}), 500

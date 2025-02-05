@@ -1,1 +1,9 @@
 Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-JWT-Extended
+python-dotenv
+flask_cors
+pika
+requests
+kafka-python

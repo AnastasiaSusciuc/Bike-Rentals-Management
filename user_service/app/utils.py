@@ -8,7 +8,7 @@ import logging
 def role_required(*roles):
     """
     Decorator to check if the user has one of the required roles.
-    :param roles: One or more roles ('librarian', 'user') that are allowed to access the route.
+    :param roles: One or more roles ('admin', 'renter') that are allowed to access the route.
     """
 
     def decorator(func):

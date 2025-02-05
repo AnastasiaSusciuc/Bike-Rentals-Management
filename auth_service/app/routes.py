@@ -7,6 +7,7 @@ from . import db
 import datetime
 
 auth_routes = Blueprint('auth', __name__)
+# todo add rate limiter and password match
 
 
 @auth_routes.route('/register', methods=['POST'])
@@ -56,7 +57,7 @@ def login():
         expires_delta=datetime.timedelta(hours=1),
         additional_claims={
             "role": user.role,
-            "username": user.username,
+            "username": user.username,  # todo maybe remove for more secure api
             "id": user.id,
         }
     )

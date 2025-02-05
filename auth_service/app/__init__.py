@@ -6,10 +6,17 @@ from .models import db
 import os
 
 # Load environment variables
-# dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv("/Users/anastasiasusciuc/Desktop/Ani-SOA-App/auth_service/.env")
-print(os.path.abspath('instance/auth.db'))
+# # dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+# load_dotenv("/Users/anastasiasusciuc/Desktop/Ani-SOA-App/auth_service/.env")
 
+project_root = os.path.dirname(os.path.abspath(__file__))
+# Resolve the correct path to the .env file in the project root directory
+env_file_path = os.path.join(project_root, '..', '.env')
+
+# Load the .env file
+load_dotenv(env_file_path)
+
+print("PATHH: ", env_file_path)
 # Initialize extensions
 jwt = JWTManager()
 migrate = Migrate()
@@ -31,6 +38,6 @@ def create_app():
 
     # Register blueprints
     from .routes import auth_routes
-    app.register_blueprint(auth_routes)
+    app.register_blueprint(auth_routes, url_prefix='/auth')
 
     return app
