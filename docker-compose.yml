@@ -22,7 +22,6 @@ services:
     networks:
       - app_network
     volumes:
-#      - ./.env:/app/.env
       - ./instance:/app/instance
 
   user_service:
@@ -35,7 +34,6 @@ services:
       - FLASK_ENV=development
     volumes:
       - ./instance:/app/instance
-#      - ./.env:/app/.env
 
   bike_service:
     build: ./bike_service
@@ -58,7 +56,7 @@ services:
     environment:
       - FLASK_ENV=development
       - DATABASE_URI=sqlite:////app/instance/bike_rentals.db
-    restart: on-failure
+#    restart: on-failure # todo
     networks:
       - app_network
 
@@ -112,6 +110,6 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     networks:
       - app_network
-    restart: on-failure
+#    restart: on-failure
 
 

@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -11,6 +13,7 @@ import os
 import threading
 
 # Load environment variables
+
 project_root = os.path.dirname(os.path.abspath(__file__))
 env_file_path = os.path.join(project_root, '..', '.env')
 load_dotenv(env_file_path)
@@ -23,8 +26,22 @@ mail = Mail()
 
 def create_app():
     app = Flask(__name__)
+    # app.config.from_object(Config)
+
+    # Load email configuration
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USE_SSL'] = False
+    # app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'maria.andreea.farcas@gmail.com')
+    # app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'qinciB-surpiv-suscy7')
+
+    app.config['MAIL_USERNAME'] = 'maria.andreea.farcas@gmail.com'  # todo
+    app.config['MAIL_PASSWORD'] = 'hsoi bixs ameu vpfn'
+    app.config['MAIL_DEFAULT_SENDER'] = 'noreply@yourdomain.com'
+
     app.config['DEBUG'] = True  # todo remove
-    # logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     CORS(app)
     mail.init_app(app)

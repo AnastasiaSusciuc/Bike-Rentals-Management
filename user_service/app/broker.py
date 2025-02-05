@@ -19,16 +19,15 @@ logging.getLogger("pika").setLevel(logging.INFO)
 def send_email_notification(user_id, bike_id, mail):
     """Send an email notification to the user about bike availability."""
     try:
-        # Example user email and bike details lookup (replace with actual database query)
-        user_email = 'susciuc.anastasia@gmail.com'  # Function to fetch user email
+        user_email = 'susciuc.anastasia@gmail.com'  # get the email of the user
+        username = "Anastasia"
 
-        # Create email message
-        subject = f"bike Availability Notification: {bike_id}"
-        body = f"Dear User,\n\nThe bike you were waiting for is now available. Please log in to borrow it.\n\nThank you!"
+        subject = f"Bike Availability Update For Bike {bike_id}"
+        body = f"Dear {username},\n\nThe bike you were waiting for is now available!! Yaaay! Don't miss the chance to " \
+               f"rent it!\n\nThank you! "
 
         msg = Message(subject, recipients=[user_email], body=body, sender="noreply@library.com")
 
-        # Send email
         mail.send(msg)
         current_app.logger.info(f"***** Email sent to {user_email} about bike {bike_id} availability.")
 
@@ -76,7 +75,6 @@ def start_kafka_notification_consumer(mail):
 
         except Exception as e:
             current_app.logger.error(f"Error in Kafka notification consumer: {str(e)}")
-
 
 
 ###########################

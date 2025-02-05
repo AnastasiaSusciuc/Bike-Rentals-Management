@@ -1,7 +1,7 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-RUN apt-get update && apt-get install -y curl && apt-get clean
+RUN apt-get update && apt-get install -y curl && apt-get clean && apt install -y telnet && apt install -y sqlite3
 
 # Set the working directory in the container
 WORKDIR /app

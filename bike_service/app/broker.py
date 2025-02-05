@@ -20,8 +20,8 @@ producer = KafkaProducer(
 )
 
 
-def publish_borrow_request(bike_id, user_id):
-    """Publishes a borrow request to the Kafka topic when a bike is unavailable."""
+def publish_rent_request(bike_id, user_id):
+    """Publishes a rent request to the Kafka topic when a bike is unavailable."""
     event = {
         "bike_id": bike_id,
         "user_id": user_id,
@@ -70,6 +70,7 @@ def on_rent_bike_message(ch, method, properties, body):
                 waiting_list_entry = WaitingList(bike_id=bike.id, user_id=user_id)
                 db.session.add(waiting_list_entry)
                 db.session.commit()
+                publish_rent_request(bike_id, user_id)
             else:
                 # Check if the user has already rented this bike
                 existing_rental = Rental.query.filter_by(
@@ -99,7 +100,7 @@ def on_rent_bike_message(ch, method, properties, body):
 
         # Send response back to User Service
         send_rent_response(response)
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+        ch.basic_ack(delivery_tag=method.delivery_tag) # todo
 
 
 def send_rent_response(response):
@@ -190,9 +191,8 @@ def on_return_request(ch, method, properties, body):
                 waiting_list = WaitingList.query.filter_by(bike_id=bike_id).all()
                 if waiting_list:
                     for entry in waiting_list:
-                        print("SHOULD SEND NOTIFICATION")
-                        # notify_user_bike_available(entry.user_id, bike_id)
-                        pass  # todo todo
+                        notify_user_bike_available(entry.user_id, bike_id)
+                        pass
 
                     WaitingList.query.filter_by(bike_id=bike_id).delete()
                     db.session.commit()
