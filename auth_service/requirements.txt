@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 Flask-JWT-Extended
 python-dotenv
+flask-cors

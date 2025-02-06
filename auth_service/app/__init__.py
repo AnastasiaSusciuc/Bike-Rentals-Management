@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
+from flask_cors import CORS
 from dotenv import load_dotenv
 from .models import db
 import os
@@ -24,6 +25,14 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app, resources={
+        r"/auth/*": {
+            "origins": ["http://localhost:4201"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True
+        }
+    })
 
     # Load configuration
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
