@@ -1,0 +1,10 @@
+digraph LibraryService {
+    node [shape=record];
+
+    rest_api [label="{ REST API | /profile (GET) | - Retrieve or create user profile | /rent (POST) | - Send rent request via RabbitMQ | /return (POST) | - Send return request via RabbitMQ | /users (GET) | - Fetch all users (admin only) }"];
+    user [label="{ User | - id: Integer | - username: String | - name: String | - role: String | - created_at: DateTime }"];
+    messaging [label="{ Messaging | send_rental_request(user_id, book_id): Void | send_return_request(user_id, book_id): Void }"];
+
+    rest_api -> user [label="Manipulates"];
+    rest_api -> messaging [label="Calls"];
+}

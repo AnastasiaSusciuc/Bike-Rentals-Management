@@ -28,6 +28,7 @@ def create_app():
     app.logger.info(os.getenv('DATABASE_URI'))
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-key')
+    app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2 MB limit
 
     db.init_app(app)
     jwt.init_app(app)

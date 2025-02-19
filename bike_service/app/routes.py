@@ -21,15 +21,19 @@ def add_bike():
     if not model or not brand or not serial_number:
         return jsonify({"msg": "Model, brand, and serial number are required", "hostname": HOST_NAME}), 400
 
+    if len(model) > 50 or len(brand) > 50 or len(serial_number) > 20:
+        return jsonify({"msg": "Input too long", "hostname": HOST_NAME}), 400
+
+    if int(available_units) < 1:
+        return jsonify({"msg": "Available units must be at least 1", "hostname": HOST_NAME}), 400
+
     # Ensure the serial number is unique
     existing_bike = Bike.query.filter_by(serial_number=serial_number).first()
     if existing_bike:
         return jsonify({"msg": "Bike with this serial number already exists", "hostname": HOST_NAME}), 400
 
     new_bike = Bike(model=model, brand=brand, serial_number=serial_number, available_units=available_units)
-    print(os.path.abspath('bike_rentals.db'))
-    print("NEW BIKE", new_bike)
-    print("NEW BIKE", serial_number, available_units)
+
     db.session.add(new_bike)
     db.session.commit()
     return jsonify({"msg": "Bike added successfully", "hostname": HOST_NAME}), 201
@@ -67,7 +71,6 @@ def get_rented_bikes():
     # Query the Rental table for bikes rented by this user
     # rentals = Rental.query.filter_by(user_id=user_id)
     rentals = Rental.query.filter(Rental.user_id == user_id).all()
-    print("OSOSOS", os.path.abspath('bike_rentals.db'))
     if not rentals:
         return jsonify({"msg": "No bikes rented"}), 200
 
