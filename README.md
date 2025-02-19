@@ -31,3 +31,6 @@ A Lambda function, /get-garages, demonstrates serverless computing in this appli
 
 The following architecture diagram illustrates how all components come together: 
 
+![Architecture Diagram](./resources/SOA-architecture.png)
+
+
