@@ -9,12 +9,10 @@ from .models import db
 import os
 import threading
 
-# Load environment variables
 project_root = os.path.dirname(os.path.abspath(__file__))
 env_file_path = os.path.join(project_root, '..', '.env')
 load_dotenv(env_file_path)
 
-# Initialize extensions
 jwt = JWTManager()
 migrate = Migrate()
 

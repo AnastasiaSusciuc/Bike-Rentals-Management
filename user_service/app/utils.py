@@ -1,8 +1,6 @@
 from functools import wraps
-from flask import jsonify, current_app
+from flask import jsonify
 from flask_jwt_extended import get_jwt, jwt_required
-
-import logging
 
 
 def role_required(*roles):

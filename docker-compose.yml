@@ -4,7 +4,7 @@ networks:
     driver: bridge
 
 services:
-  rabbitmq: # todo move down
+  rabbitmq:
     image: rabbitmq:management
     platform: linux/arm64
     ports:
@@ -19,10 +19,11 @@ services:
       - "5004:5000"
     environment:
       - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
     networks:
       - app_network
     volumes:
-      - ./auth_service/instance:/app/instance
+      - ./auth_service/instance:/instance
 
   user_service:
     build: ./user_service
@@ -32,8 +33,9 @@ services:
       - "5001:5000"
     environment:
       - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
     volumes:
-      - ./user_service/instance:/app/instance
+      - ./user_service/instance:/instance
 
   bike_service:
     build: ./bike_service
@@ -43,22 +45,24 @@ services:
       - "5002:5000"
     environment:
       - FLASK_ENV=development
-#      - DATABASE_URI=sqlite:////app/instance/bike_rentals.db todo ooooooooo
+      - PYTHONUNBUFFERED=1
     volumes:
-      - ./bike_service/instance:/app/instance
+      - ./bike_service/instance:/instance
 
   bike_service_backup:
     build:
       context: ./bike_service
     container_name: bike_service_backup
     ports:
-      - "5003:5000"  # Bike Service Backup on port 5003
+      - "5003:5000"
     environment:
       - FLASK_ENV=development
-      - DATABASE_URI=sqlite:////app/instance/bike_rentals.db
-#    restart: on-failure # todo
+      - PYTHONUNBUFFERED=1
+    restart: on-failure
     networks:
       - app_network
+    volumes:
+      - ./bike_service/instance:/instance
 
   nginx:
     image: nginx:latest
@@ -97,6 +101,4 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     networks:
       - app_network
-#    restart: on-failure
-
-
+    restart: on-failure

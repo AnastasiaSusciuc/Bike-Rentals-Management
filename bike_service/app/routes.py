@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 import requests
 from flask import Blueprint, request, jsonify
 from .models import Bike, db, Rental
@@ -29,6 +27,9 @@ def add_bike():
         return jsonify({"msg": "Bike with this serial number already exists", "hostname": HOST_NAME}), 400
 
     new_bike = Bike(model=model, brand=brand, serial_number=serial_number, available_units=available_units)
+    print(os.path.abspath('bike_rentals.db'))
+    print("NEW BIKE", new_bike)
+    print("NEW BIKE", serial_number, available_units)
     db.session.add(new_bike)
     db.session.commit()
     return jsonify({"msg": "Bike added successfully", "hostname": HOST_NAME}), 201
@@ -64,10 +65,11 @@ def get_rented_bikes():
     user_id = request.args.get('user_id')
 
     # Query the Rental table for bikes rented by this user
-    rentals = Rental.query.filter_by(user_id=user_id, returned_on=None).all()
-
+    # rentals = Rental.query.filter_by(user_id=user_id)
+    rentals = Rental.query.filter(Rental.user_id == user_id).all()
+    print("OSOSOS", os.path.abspath('bike_rentals.db'))
     if not rentals:
-        return jsonify({"msg": "No bikes rented"}), 404
+        return jsonify({"msg": "No bikes rented"}), 200
 
     rented_bikes = []
     for rental in rentals:
@@ -78,9 +80,11 @@ def get_rented_bikes():
                 "model": bike.model,
                 "brand": bike.brand,
                 "serial_number": bike.serial_number,
-                "return_by": rental.return_by
+                "return_by": rental.return_by,
+                "returned_on": rental.returned_on
             })
 
+    print(rented_bikes)
     return jsonify({
         "rented_bikes": rented_bikes,
         "hostname": os.getenv('HOST_NAME')
@@ -144,7 +148,6 @@ def search_bike_by_brand():
 
 
 @bike_bp.route('/get-garages', methods=['GET'])
-# @role_required('admin', 'renter')  # todo
 def get_garages():
     bikes_count = Bike.query.count()
     response = requests.post(os.getenv('LAMBDA_URL'), json={"bikes": bikes_count})

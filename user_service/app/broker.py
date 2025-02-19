@@ -39,14 +39,6 @@ def start_kafka_notification_consumer(mail):
     """Starts a Kafka consumer to listen for notifications about bike availability."""
     with current_app.app_context():
         try:
-
-            # consumer = KafkaConsumer(
-            #     'borrow-requests',
-            #     bootstrap_servers='kafka1:9092',
-            #     group_id='user-service-group',
-            #     value_deserializer=lambda v: json.loads(v.decode('utf-8')),
-            #     auto_offset_reset='earliest'
-            # )
             consumer = KafkaConsumer(
                 'bike-availability',
                 bootstrap_servers='kafka1:9092',

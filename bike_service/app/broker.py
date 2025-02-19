@@ -4,7 +4,7 @@ from flask import current_app
 from .models import Bike, Rental, db, WaitingList
 from datetime import datetime, timedelta
 from kafka import KafkaProducer
-import os
+
 
 import logging
 
